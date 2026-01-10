@@ -1,18 +1,16 @@
+import os
 from fastapi import FastAPI
-from pydantic import BaseModel
-import openai
-
-openai.api_key = "YOUR_OPENAI_API_KEY"
+import uvicorn
 
 app = FastAPI()
 
-class Question(BaseModel):
-    question: str
+@app.get("/")
+def home():
+    return {"message": "AI Exam Doubt Solver Live"}
 
-@app.post("/ask")
-def ask_ai(q: Question):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": q.question}]
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=int(os.environ.get("PORT", 8000))
     )
-    return {"answer": response.choices[0].message.content}
