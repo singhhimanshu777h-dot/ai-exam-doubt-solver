@@ -1,16 +1,13 @@
-import os
 from fastapi import FastAPI
-import uvicorn
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
-@app.get("/")
-def home():
-    return {"message": "AI Exam Doubt Solver Live"}
+# CSS & JS serve karne ke liye
+app.mount("/static", StaticFiles(directory="."), name="static")
 
-if __name__ == "__main__":
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=int(os.environ.get("PORT", 8000))
-    )
+@app.get("/", response_class=HTMLResponse)
+async def home():
+    with open("index.html", "r", encoding="utf-8") as f:
+        return f.read()
