@@ -10,5 +10,5 @@ async function askAI() {
     });
 
     const data = await response.json();
-    document.getElementById("answer").innerText = data.answer;
+ document.getElementById("answer").innerHTML = data.answer.replace(/\n/g, "<br><br>");
 }
