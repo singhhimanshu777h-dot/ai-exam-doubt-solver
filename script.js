@@ -1,12 +1,14 @@
-async function ask() {
-  const q = document.getElementById("question").value;
+async function askAI() {
+    const question = document.getElementById("question").value;
 
-  const res = await fetch("https://YOUR_BACKEND_LINK/ask", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ question: q })
-  });
+    const response = await fetch("/ask", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ question: question })
+    });
 
-  const data = await res.json();
-  document.getElementById("answer").innerText = data.answer;
+    const data = await response.json();
+    document.getElementById("answer").innerText = data.answer;
 }
