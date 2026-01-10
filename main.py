@@ -5,11 +5,13 @@ from pydantic import BaseModel
 import os
 from openai import OpenAI
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
 app = FastAPI()
 
+# Static files (CSS, JS)
 app.mount("/static", StaticFiles(directory="."), name="static")
+
+# OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.get("/", response_class=HTMLResponse)
 async def home():
@@ -21,12 +23,15 @@ class Question(BaseModel):
 
 @app.post("/ask")
 async def ask_ai(data: Question):
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": data.question}
-        ]
-    )
-    return {
-        "answer": response.choices[0].message.content
-    }
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful exam doubt solver."},
+                {"role": "user", "content": data.question}
+            ]
+        )
+        answer = response.choices[0].message.content
+        return {"answer": answer}
+    except Exception as e:
+        return {"error": str(e)}
