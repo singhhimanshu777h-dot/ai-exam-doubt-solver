@@ -8,8 +8,8 @@ async function askAI() {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ question: question })
-  });
+    
+    body: JSON.stringify({question: "Write a proper exam-ready answer in simple points and paragraphs:\n" + question })});
 
   const data = await response.json();
   document.getElementById("answer").innerHTML =
