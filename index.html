@@ -1,36 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>AI Exam Doubt Solver</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="app">
-    <header>
-      <h1>AI Exam Doubt Solver</h1>
-      <p>Ask your question & get exam-ready answers</p>
-    </header>
+<h2>Ask Your Exam Doubt</h2>
 
-    <main id="chat">
-      <div class="bot-msg">
-        👋 Hi! Ask me any exam question.
-      </div>
-    </main>
+<input type="text" id="question" placeholder="Type your question" />
+<button onclick="askAI()">Ask AI</button>
 
-    <footer>
-      <input
-        type="text"
-        id="question"
-        placeholder="Type your question..."
-        onkeydown="if(event.key==='Enter') askAI()"
-      />
-      <button onclick="askAI()">Ask</button>
-    </footer>
-  </div>
+<p id="answer"></p>
 
-  <script src="/static/script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
