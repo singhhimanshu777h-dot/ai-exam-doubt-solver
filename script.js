@@ -12,6 +12,8 @@ async function askAI() {
     body: JSON.stringify({question: "Write a proper exam-ready answer in simple points and paragraphs:\n" + question })});
 
   const data = await response.json();
-  document.getElementById("answer").innerHTML =
-    data.answer.replace(/\n/g, "<br><br>");
+  let formatted = data.answer
+  .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+  .replace(/\n/g, "<br>");
+document.getElementById("answer").innerHTML = formatted;
 }
