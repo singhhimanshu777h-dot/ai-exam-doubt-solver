@@ -24,14 +24,30 @@ class Question(BaseModel):
 @app.post("/ask")
 async def ask_ai(data: Question):
     try:
+        prompt = f"""
+Answer the following question in MARKDOWN format.
+
+Rules:
+- Use **bold** for headings and important terms
+- Use bullet points where suitable
+- Write exam-ready answers
+- Do NOT explain formatting
+- Do NOT mention markdown
+
+Question:
+{data.question}
+"""
+
         response = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are a helpful exam doubt solver."},
-                {"role": "user", "content": data.question}
+                {"role": "system", "content": "You are an expert exam answer writer."},
+                {"role": "user", "content": prompt}
             ]
         )
+
         answer = response.choices[0].message.content
         return {"answer": answer}
+
     except Exception as e:
         return {"error": str(e)}
