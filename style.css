@@ -164,4 +164,6 @@ button:hover {
     padding: 25px;
   }
 }
-    
+    .answer-box {
+  transition: all 0.3s ease;
+    }
