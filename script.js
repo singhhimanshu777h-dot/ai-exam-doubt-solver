@@ -18,26 +18,37 @@ async function askAI() {
 
   let formatted = data.answer
     .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-    .replace(/\n/g, "<br>");
+    .split("\n");
 
-  typeWriter(answerBox, formatted, 18);
+  answerBox.innerHTML = "";
+  showLineByLine(answerBox, formatted, 350);
 }
 
-/* 🔥 Typing Effect */
-function typeWriter(element, text, speed) {
-  element.innerHTML = "";
-  let i = 0;
+/* ✅ LINE BY LINE EFFECT */
+function showLineByLine(element, lines, delay) {
+  let index = 0;
 
-  function typing() {
-    if (i < text.length) {
-      element.innerHTML += text.charAt(i);
-      i++;
-      setTimeout(typing, speed);
+  function showLineByLine(element, lines, delay) {
+  let index = 0;
+
+  function showNextLine() {
+    if (index < lines.length) {
+      element.innerHTML += lines[index] + "<br>";
+      index++;
+
+      // ✅ AUTO SCROLL (IMPORTANT)
+      element.scrollIntoView({ behavior: "smooth", block: "end" });
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+      });
+
+      setTimeout(showNextLine, delay);
     }
   }
 
-  typing();
-}
+  showNextLine();
+  }
 
 /* Loader hide */
 window.addEventListener("load", () => {
