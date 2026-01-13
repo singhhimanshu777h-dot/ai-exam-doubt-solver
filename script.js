@@ -17,3 +17,11 @@ async function askAI() {
   .replace(/\n/g, "<br>");
 document.getElementById("answer").innerHTML = formatted;
 }
+// Hide loader when page fully loads
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
+  if (loader) {
+    loader.style.opacity = "0";
+    setTimeout(() => loader.style.display = "none", 500);
+  }
+});
