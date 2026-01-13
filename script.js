@@ -1,60 +1,82 @@
 async function askAI() {
-  const question = document.getElementById("question").value;
-  const answerBox = document.getElementById("answer");
+  const questionInput = document.getElementById("question");
+  const chatBox = document.getElementById("answer");
 
-  answerBox.innerHTML = "🤖 Thinking...";
+  const question = questionInput.value.trim();
+  if (!question) return;
 
-  const response = await fetch("/ask", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      question: "Write a proper exam-ready answer in simple points and paragraphs:\n" + question
-    })
-  });
+  // USER MESSAGE (Right side)
+  addMessage(question, "user");
 
-  const data = await response.json();
+  questionInput.value = "";
 
-  let formatted = data.answer
-    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
-    .split("\n");
+  // AI typing bubble
+  const typingBubble = addMessage("Typing...", "ai", true);
 
-  answerBox.innerHTML = "";
-  showLineByLine(answerBox, formatted, 350);
+  try {
+    const response = await fetch("/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        question: "Write a proper exam-ready answer in points and paragraphs:\n" + question
+      })
+    });
+
+    const data = await response.json();
+
+    // Remove typing bubble
+    typingBubble.remove();
+
+    // AI RESPONSE (line by line)
+    typeLineByLine(chatBox, data.answer);
+
+  } catch (err) {
+    typingBubble.innerText = "Error getting response ❌";
+  }
 }
 
-/* ✅ LINE BY LINE EFFECT */
-function showLineByLine(element, lines, delay) {
+/* ✅ ADD MESSAGE BUBBLE */
+function addMessage(text, sender, isTemp = false) {
+  const chatBox = document.getElementById("answer");
+
+  const bubble = document.createElement("div");
+  bubble.className = sender === "user" ? "chat user" : "chat ai";
+
+  bubble.innerText = text;
+
+  if (isTemp) bubble.id = "typing";
+
+  chatBox.appendChild(bubble);
+  autoScroll();
+
+  return bubble;
+}
+
+/* ✅ LINE BY LINE TYPING */
+function typeLineByLine(container, text) {
+  const lines = text.split("\n");
   let index = 0;
 
-  function showLineByLine(element, lines, delay) {
-  let index = 0;
+  const bubble = document.createElement("div");
+  bubble.className = "chat ai";
+  container.appendChild(bubble);
 
   function showNextLine() {
     if (index < lines.length) {
-      element.innerHTML += lines[index] + "<br>";
+      bubble.innerHTML += lines[index] + "<br>";
       index++;
-
-      // ✅ AUTO SCROLL (IMPORTANT)
-      element.scrollIntoView({ behavior: "smooth", block: "end" });
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth"
-      });
-
-      setTimeout(showNextLine, delay);
+      autoScroll();
+      setTimeout(showNextLine, 300);
     }
   }
 
   showNextLine();
-  }
+}
 
-/* Loader hide */
-window.addEventListener("load", () => {
-  const loader = document.getElementById("loader");
-  if (loader) {
-    loader.style.opacity = "0";
-    setTimeout(() => loader.style.display = "none", 500);
-  }
-});
+/* ✅ AUTO SCROLL */
+function autoScroll() {
+  const chatBox = document.getElementById("answer");
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
